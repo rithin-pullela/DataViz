@@ -1,6 +1,6 @@
 # DataViz
 
-#Env Setup:
+# Env Setup:
 python -m venv myenv
 
 source myenv/bin/activate
