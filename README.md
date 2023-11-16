@@ -8,4 +8,4 @@ source myenv/bin/activate
 pip install flask
 
 # To run
-python3 -m flask run
+python3 app.py
