@@ -23,7 +23,7 @@ def get_col_country():
 @app.route('/education_data', methods=['GET'])
 def get_education_data():
     df= get_data()
-    sub_df= df[['Country', 'Year', 'avg_years_of_schooling', 'GDP per capita', 'Life Expectancy', 'Health expenditure', 'Electric power consumption', 'People practicing open defecation']].copy()
+    sub_df= df[['country', 'continent', 'year', 'avg_years_of_schooling', 'gdp_per_capita', 'life_expectancy', 'health_expenditure', 'electric_power_consumption', 'people_practicing_open_defecation']].copy()
     json_data= sub_df.to_json(orient='records')
     return json_data
 
