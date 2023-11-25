@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from dataHandler import get_data
 import pandas as pd
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def home():
