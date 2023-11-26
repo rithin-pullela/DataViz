@@ -39,5 +39,36 @@ def save_annotations():
     df.to_csv('data.csv', index=False)
     return jsonify({"message": "Annotations saved successfully"}), 200
 
+# /api/annotated_scatter_points
+@app.route('/annotated_scatter_points', methods=['GET'])
+def get_annotated_scatter_points():
+    df= get_data()
+    sub_df= df[['id', 'annotations']].copy()
+    sub_df['annotations'] = sub_df['annotations'].apply(lambda x: eval(x))
+    result = sub_df[sub_df['annotations'].apply(lambda x: x['scatterPlot_annotations']['annotation'] != '')]
+    json_data= result.to_json(orient='records')
+    return json_data
+
+# /api/annotated_heatmap_points
+@app.route('/annotated_heatmap_points', methods=['GET'])
+def get_annotated_heatmap_points():
+    df= get_data()
+    sub_df= df[['id', 'annotations']].copy()
+    sub_df['annotations'] = sub_df['annotations'].apply(lambda x: eval(x))
+    result = sub_df[sub_df['annotations'].apply(lambda x: x['heatMap_annotations']['annotation'] != '')]
+    json_data= result.to_json(orient='records')
+    return json_data
+
+# /api/annotated_timeplot_points
+@app.route('/annotated_timeplot_points', methods=['GET'])
+def get_annotated_timeplot_points():
+    df= get_data()
+    sub_df= df[['id', 'annotations']].copy()
+    sub_df['annotations'] = sub_df['annotations'].apply(lambda x: eval(x))
+    result = sub_df[sub_df['annotations'].apply(lambda x: x['timePlot_annotations']['annotation'] != '')]
+    json_data= result.to_json(orient='records')
+    return json_data
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001)
