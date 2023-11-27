@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from dataHandler import get_data
 import pandas as pd
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -34,8 +35,25 @@ def get_education_data():
 def save_annotations():
     df = get_data()
     annotations= request.get_json()
-    for annotation in annotations:
-        df.loc[df['id'] == annotation['id'], 'annotations'] = annotation['annotations']
+
+    # Get the current annotation
+    current_annotation = df[(df[annotations['x_value']] == annotations['x_coordinate']) & (df[annotations['y_value']] == annotations['y_coordinate'])]['annotations'].values[0]
+    new_annotation = None
+
+    # Now, you can update the annotation
+    current_annotation = current_annotation.replace("'", "\"")  # Replace single quotes with double quotes
+    new_annotation = json.loads(current_annotation) 
+    new_annotation[annotations["plot_type"]]["x_coordinate"] = annotations['x_coordinate']  
+    new_annotation[annotations["plot_type"]]["y_coordinate"] = annotations['y_coordinate']  
+    new_annotation[annotations["plot_type"]]["annotation"] = annotations['annotation']  
+
+    # Update the dataframe
+    df.loc[(df['gdp_per_capita'] == annotations['x_coordinate']) & (df['health_expenditure'] == annotations['y_coordinate']), 'annotations'] = json.dumps(new_annotation)
+
+    # for annotation in annotations:
+    #     df.loc[df['id'] == annotation['id'], 'annotations'] = annotation['annotations']
+
+    # Save updated dataframe into csv
     df.to_csv('data.csv', index=False)
     return jsonify({"message": "Annotations saved successfully"}), 200
 
@@ -46,6 +64,7 @@ def get_annotated_scatter_points():
     sub_df= df[['id', 'annotations']].copy()
     sub_df['annotations'] = sub_df['annotations'].apply(lambda x: eval(x))
     result = sub_df[sub_df['annotations'].apply(lambda x: x['scatterPlot_annotations']['annotation'] != '')]
+    # result = sub_df['annotations']
     json_data= result.to_json(orient='records')
     return json_data
 
