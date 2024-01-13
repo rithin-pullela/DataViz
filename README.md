@@ -1,4 +1,6 @@
 # DataViz
+This is the backend for the Data Visulization Project, developed in flask and deployed in heroku.
+
 
 # Env Setup:
 python -m venv myenv
